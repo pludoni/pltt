@@ -9,12 +9,14 @@ class Pltt::Runner < Thor
 
   desc "create", "create new issue in current project"
   def create
+    require_relative './actions/create'
+    Pltt::Actions::Create.run
   end
 
-  # TODO
   desc "start ID", "start tracking for issue #ID"
   def start(id)
-    puts "Start #{id}"
+    require_relative './actions/start'
+    Pltt::Actions::Start.run(id)
   end
 
   # TODO
@@ -23,21 +25,24 @@ class Pltt::Runner < Thor
     puts "Start #{id}"
   end
 
+  desc "list", "List all project issues"
+  option :my, type: :boolean
+  option :label, type: :string
+  def list
+    require_relative './actions/list'
+    Pltt::Actions::List.run(my: options[:my], label: options[:label])
+  end
+
   desc "status", "Status"
   def status
-    require_relative './actions/base'
-    if (c = Pltt::Actions::Base.new.current_entry)
-      puts c.status
-    else
-      puts "No tracking is running"
-      exit 1
-    end
+    require_relative './actions/status'
     Pltt::Actions::Status.run
   end
 
-  desc "edit [ID]", "start tracking for issue #ID"
+  desc "edit [ID = CURRENT]", "start tracking for issue #ID"
   def edit(id = nil)
-    puts "Start #{id}"
+    require_relative './actions/edit'
+    Pltt::Actions::Edit.run(id)
   end
 
   desc "cancel", "cancel current entry"

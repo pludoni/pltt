@@ -1,4 +1,8 @@
 class String
+  def dark_gray
+    "\e[90m#{self}\e[0m"
+  end
+
   def black
     "\e[30m#{self}\e[0m"
   end
@@ -29,6 +33,10 @@ class String
 
   def gray
     "\e[37m#{self}\e[0m"
+  end
+
+  def gray39
+    "\e[39m#{self}\e[0m"
   end
 
   def bg_black

@@ -53,4 +53,19 @@ class Pltt::Actions::Base
       exit 1
     end
   end
+
+  def exit_if_not_running!
+    unless current_entry
+      puts "Not started!".red
+      exit 1
+    end
+  end
+
+  def gitlab_api
+    @gitlab_api ||=
+      begin
+        require_relative '../gitlab_wrapper'
+        Pltt::GitlabWrapper.new(config['url'], config['token'], config['project'])
+      end
+  end
 end
