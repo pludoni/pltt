@@ -9,7 +9,7 @@ class Pltt::Actions::Status < Pltt::Actions::Base
       puts "-------------------------------------------".black
       puts <<~DOC
         #{issue.title.green} (##{iid})
-        #{issue.time_stats.human_total_time_spent.dark_gray}            #{issue.assignees.map { |i| "@#{i['username']}".blue }.join(' ')}
+        #{issue.time_stats.human_total_time_spent&.dark_gray}            #{issue.assignees.map { |i| "@#{i['username']}".blue }.join(' ')}
         #{issue.labels.map { |i| "[~#{i}]".red }.join(' ')}     #{issue.milestone&.title&.magenta}
 
         #{issue.description}

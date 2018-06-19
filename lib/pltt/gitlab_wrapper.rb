@@ -23,4 +23,18 @@ class Pltt::GitlabWrapper
   def labels
     Gitlab.labels(@project)
   end
+
+  def create_branch_and_merge_request(branch_name, issue)
+    Gitlab.create_branch(@project, branch_name, 'master')
+    Gitlab.create_merge_request(@project, "Resolve #{issue.title}",
+                                source_branch: branch_name,
+                                target_branch: 'master',
+                                description: "Closes ##{issue.iid}",
+                                remove_source_branch: true)
+
+  end
+
+  def add_time_spent_on_issue(project, issue_id, duration)
+    Gitlab.add_time_spent_on_issue(project, issue_id, duration)
+  end
 end

@@ -29,8 +29,10 @@ Missing before release:
 
 * [ ] gtt start with no arguments shows the list of open issues to select one from
 * [ ] First-Start Guide, Generator which creates .gtt.yml in a project, gets the project url from .git/config
-* [ ] gtt stop / sync note creation
+* [x] gtt create can optionally create a MR + branch
+* [x] gtt stop / sync note creation
 * [ ] Timezone
+* [ ] Frame Cleanup, everything older than X month can delete
 
 Missing, but not planned soon, as not needed by us:
 

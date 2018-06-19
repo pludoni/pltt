@@ -1,5 +1,6 @@
 class Pltt::Entry
   attr_reader :id, :project, :start, :stop, :resource
+  attr_writer :start, :stop
 
   def self.from_resume(other_entry)
     new('project' => other_entry.project, 'resource' => other_entry.resource, 'start' => Time.now.utc.iso8601)
@@ -30,16 +31,23 @@ class Pltt::Entry
   end
 
   def status
-    duration = (Time.now.utc - @start.utc)
-    duration = Time.at(duration).utc.strftime("%H:%M:%S")
+    duration = duration_time.strftime("%H:%M:%S")
     <<~DOC
-      #{@project}##{@resource['id']}, #{duration.green} (id: #{@id})
+      #{@project}##{iid}, #{duration.green} (id: #{@id})
       #{url.gray}
     DOC
   end
 
+  def duration_time
+    Time.at(duration_seconds).utc
+  end
+
+  def duration_seconds
+    (@stop || Time.now.utc) - @start.utc
+  end
+
   def url
-    "#{Pltt::Actions::Base.config['gitlab_url']}/#{@project}/issues/#{@resource['id']}"
+    "#{Pltt::Actions::Base.config['gitlab_url']}/#{@project}/issues/#{iid}"
   end
 
   def frame_path
@@ -70,7 +78,22 @@ class Pltt::Entry
                                   start: @start && @start.iso8601,
                                   stop: @stop && @stop.iso8601)
     File.write(frame_path, output)
-    puts "Started:"
+    unless @stop
+      puts "Started:"
+    end
     puts status
+  end
+
+  def add_note(id, time)
+    @notes ||= []
+    @notes << { id: id, time: time }
+  end
+
+  def iid
+    @resource['id']
+  end
+
+  def synced?
+    @notes && @notes.length > 0
   end
 end

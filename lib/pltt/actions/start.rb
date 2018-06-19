@@ -10,8 +10,9 @@ class Pltt::Actions::Start < Pltt::Actions::Base
       exit 1
     end
     Pltt::Entry.create_new_for_gitlab_issue(config['project'], issue)
-  rescue Gitlab::Error::NotFound
+  rescue StandardError => e
     puts "Issue #{iid} not found in project #{config['project']}".red
+    puts e.inspect
     exit 1
   end
 end

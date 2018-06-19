@@ -68,4 +68,38 @@ class Pltt::Actions::Base
         Pltt::GitlabWrapper.new(config['url'], config['token'], config['project'])
       end
   end
+
+  def sync_all_unsaved_entries
+    gitlab_api
+    max = Time.now - 3600 * 24 * 7
+    recent_entries = all_frames.select { |i| File.mtime(i) > max }
+    recent_entries.each do |e|
+      entry = load_entry(e)
+      next if entry.synced? || entry.stop.nil?
+      sync!(entry)
+    end
+  end
+
+  def sync!(entry)
+    c = entry
+    minutes = c.duration_seconds.round / 60
+    require 'pry'
+
+    min_part = minutes % 60
+    hour_part = minutes / 60
+
+    gitlab_time_format =
+      case [hour_part > 0, min_part > 0]
+      when [true, true] then "#{hour_part}h#{min_part}m"
+      when [false, true] then "#{min_part}m"
+      when [true, false] then "#{hour_part}m"
+      else return
+      end
+    puts "Synching: #{gitlab_time_format.inspect} on #{c.project}##{c.iid}"
+    gitlab_api.add_time_spent_on_issue(c.project, c.iid, gitlab_time_format)
+
+    note_id = Gitlab.issue_notes(entry.project, entry.iid).auto_paginate.max_by { |i| i.created_at }.id
+    c.add_note(note_id, c.duration_seconds.round)
+    c.persist!
+  end
 end

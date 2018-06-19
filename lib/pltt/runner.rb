@@ -19,10 +19,10 @@ class Pltt::Runner < Thor
     Pltt::Actions::Start.run(id)
   end
 
-  # TODO
   desc "stop", "Stop"
   def stop
-    puts "Start #{id}"
+    require_relative './actions/stop'
+    Pltt::Actions::Stop.run
   end
 
   desc "list", "List all project issues"
@@ -54,6 +54,12 @@ class Pltt::Runner < Thor
       puts "No running entry to cancel"
       exit 1
     end
+  end
+
+  desc 'sync', 'sync all unsaved entries'
+  def sync
+    require_relative './actions/base'
+    Pltt::Actions::Base.new.sync_all_unsaved_entries
   end
 end
 
