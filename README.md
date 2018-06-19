@@ -1,15 +1,36 @@
-# Pltt
+# Pltt - pludoni Time Tracker Gitlab CLI interface
 
-Pltt is a Gitlab Time Tracker for the command line. It mimicks the interface of [kriskbx/gitlab-time-tracker]( https://github.com/kriskbx/gitlab-time-tracker ) and is compatible to the config and frame database. Thus, it works as a drop-in-replacement.
+[![Gem Version](https://badge.fury.io/rb/pltt.svg)](https://badge.fury.io/rb/pltt)
 
-Goals/Pros:
+Pltt is a Gitlab Time Tracker client for the command line. It mimics the interface of [kriskbx/gitlab-time-tracker]( https://github.com/kriskbx/gitlab-time-tracker ) and is compatible to the config and frame database. Thus, it works as a drop-in-replacement.
 
-* Fast interface, even though it's ruby, the boot time is faster right now
-* More friendly interface, error persistent, e.g. forgotten stoppings, issue creation with question-response cycles
+Goals/differences to gtt:
+
+* More helpful actions:
+  * ``pltt start`` - can be called without issue id and displays a CLI select to choose the issue to book on
+  * ``gtt stop`` - possible to fix issue start time / duration there
+  * ``gtt create`` - creates issue on Gitlab immediately, can input title, select labels, enter description and also optionally create a branch/MR (like the button in Gitlab Web) and immediately switch to that
 * More robust interface with Gitlab:
-  * Not possible to book on non-existend or closed issues
-  * Time Entries are booked on stop by default, so no time shifting
+  * Not possible to book on non-existing or closed issues
+  * Time Entries are booked on stop by default, so no date shifting for forgotten frames
   * pltt status shows issue body, milestone etc. too
+* Fast interface, even though it's ruby, the boot time is comparable or faster than the Nodejs version
+  * ``gtt status  0,87s user 0,10s system 110% cpu 0,883 total``
+	* ``pltt status  0,49s user 0,04s system 71% cpu 0,741 total``
+	* -> even though pltt status does more (fetches whole issue title, description etc from Gitlab), it is faster
+  * ``gtt start 79  0,87s user 0,10s system 111% cpu 0,867 total``
+	* ``pltt start 79  0,47s user 0,06s system 70% cpu 0,758 total``
+	* -> again, pltt does more - it makes an API request to gitlab to validate that issue exists and is not closed.
+  * optimizations:
+    * Dependency minimizations - only necessary deps (gitlab api, tty, thor, oj, hashids)
+    * most actions, like status etc only looks for the most recent frames in the framedir before parsing the JSON, so a larger framedir has a smaller effect on performance
+    * smaller code size, e.g. currently ~500 LOCs Ruby vs. >3000 LOCs JS
+
+
+## Notable limitations of Gitlab's API and thus also for this Gem
+
+* Gitlab's Time Tracking database is more or less append-only. So, once synced entries are undeletable by this client. If you need to fix some time tracking entry, you need to manually subtract that in the Issue, like "-3h"
+* Gitlab's Time Tracking API (and web client too) has no means of specifying the date/time of the spend entry. This is why, the entry is always posted as "right now". There is an [Issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/47324) about that. One of the motivations of this client was, that after stopping entries, they are synced immediately
 
 ## Installation
 
@@ -37,7 +58,7 @@ pltt create
 pltt resume
 ```
 
-### Stopping, Synching and Maintenance
+### Stopping, Syncing and Maintenance
 
 ```bash
 # stops time tracking & syncs to gitlab
@@ -80,7 +101,7 @@ Missing, but not planned soon, as not needed by us:
 
 * [ ] Logging/reporting of all bookings
 * [ ] No Booking on Merge requests implemented
-* [ ] No delete implemented, as cancel is enough. deleting frames is also not very useful, when they are already synced to Gitlab
+* [ ] No delete implemented, as cancel is enough. Deleting frames is also not very useful, when they are already synced to Gitlab
 
 ## Contributing
 

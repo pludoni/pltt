@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Stefan Wienert"]
   spec.email         = ["info@stefanwienert.de"]
 
-  spec.summary       = %{}
-  spec.description   = %{}
+  spec.summary       = %{Pltt is a gtt gitlab-time-tracker compatible CLI client for time tracking issues from command line}
+  spec.description   = %{Pltt is a Gitlab Time Tracker client for the command line. It mimics the interface of https://github.com/kriskbx/gitlab-time-tracker and is compatible to the config and frame database. Thus, it works as a drop-in-replacement.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
