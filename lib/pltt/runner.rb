@@ -13,8 +13,8 @@ class Pltt::Runner < Thor
     Pltt::Actions::Create.run
   end
 
-  desc "start ID", "start tracking for issue #ID"
-  def start(id)
+  desc "start [ID]", "start tracking for issue #ID"
+  def start(id = nil)
     require_relative './actions/start'
     Pltt::Actions::Start.run(id)
   end
