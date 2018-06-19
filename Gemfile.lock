@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pltt (0.1.0)
+    pltt (0.1.0.beta)
       gitlab (~> 4.4.0)
       hashids
       oj
