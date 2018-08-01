@@ -5,7 +5,7 @@ class Pltt::Actions::Status < Pltt::Actions::Base
     puts current_entry.status
 
     if (iid = current_entry.resource['id'])
-      issue = gitlab_api.issue(iid)
+      issue = gitlab_api.issue(iid, project: current_entry.project)
       puts "-------------------------------------------".black
       puts <<~DOC
         #{issue.title.green} (##{iid})

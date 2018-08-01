@@ -92,10 +92,11 @@ class Pltt::Actions::Base
       case [hour_part > 0, min_part > 0]
       when [true, true] then "#{hour_part}h#{min_part}m"
       when [false, true] then "#{min_part}m"
-      when [true, false] then "#{hour_part}m"
+      when [true, false] then "#{hour_part}h"
       else return
       end
     puts "Synching: #{gitlab_time_format.inspect} on #{c.project}##{c.iid}"
+
     gitlab_api.add_time_spent_on_issue(c.project, c.iid, gitlab_time_format)
 
     note_id = Gitlab.issue_notes(entry.project, entry.iid).auto_paginate.max_by { |i| i.created_at }.id

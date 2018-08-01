@@ -54,7 +54,7 @@ pltt start 123
 # You can enter issue title, select labels, and description
 pltt create
 
-# Starts time tracking with
+# starts tracking on the issue that was most recently tracked before
 pltt resume
 ```
 

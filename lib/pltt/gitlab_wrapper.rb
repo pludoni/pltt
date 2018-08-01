@@ -11,8 +11,8 @@ class Pltt::GitlabWrapper
     Gitlab.issues(@project, state: state, order_by: order_by, scope: scope, labels: label ? label : nil).auto_paginate
   end
 
-  def issue(id)
-    Gitlab.issue(@project, id)
+  def issue(id, project: @project)
+    Gitlab.issue(project, id)
   end
 
   def create_issue(title, description, labels)
