@@ -17,7 +17,8 @@ class Pltt::Actions::Create < Pltt::Actions::Base
     issue = gitlab_api.create_issue(title, description, selected_labels)
     _entry = Pltt::Entry.create_new_for_gitlab_issue(config['project'], issue)
 
-    branch_name = "#{issue.iid}-#{issue.title.downcase.gsub(/[\W]+/, '-')}"
+    require 'stringex'
+    branch_name = "#{issue.iid}-#{issue.title.downcase.to_url)}"
     if prompt.yes?("Automatically create a branch #{branch_name} and check out locally?")
       gitlab_api.create_branch_and_merge_request(branch_name, issue)
       system 'git fetch'
