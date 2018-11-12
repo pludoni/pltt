@@ -22,7 +22,7 @@ class Pltt::Actions::Start < Pltt::Actions::Base
     branch_name = "#{issue.iid}-#{issue.title.downcase.to_url}"
     g = Git.open('.')
     unless g.branches.find(&:current)&.name == branch_name
-      checkout_branch(g, branch_name)
+      checkout_branch(g, branch_name, issue)
     end
     start_by_issue(issue)
   rescue StandardError => e
@@ -39,7 +39,7 @@ class Pltt::Actions::Start < Pltt::Actions::Base
     Pltt::Entry.create_new_for_gitlab_issue(config['project'], issue)
   end
 
-  def checkout_branch(git, branch_name)
+  def checkout_branch(git, branch_name, issue)
     git.fetch
     existing_branch = git.branches.find { |i| i.name == branch_name }
 
