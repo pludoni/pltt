@@ -46,6 +46,20 @@ class Pltt::Actions::Base
     Dir[File.join(File.expand_path(config['frame_dir']), '*.json')]
   end
 
+  def stop_if_running!(default: false)
+    if current_entry
+      require 'tty-prompt'
+      prompt = TTY::Prompt.new
+      puts current_entry.status
+      if prompt.yes?("Es läuft bereits ein Issue, soll dieses vorher beendet werden? ", default: default)
+        require_relative './stop'
+        Pltt::Actions::Stop.run
+      else
+        exit 1
+      end
+    end
+  end
+
   def exit_if_running!
     if current_entry
       puts "Already started!".red

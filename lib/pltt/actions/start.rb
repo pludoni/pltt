@@ -1,7 +1,7 @@
 require_relative './base'
 class Pltt::Actions::Start < Pltt::Actions::Base
   def run(iid)
-    exit_if_running!
+    stop_if_running!(default: true)
     require 'tty-prompt'
     require 'stringex'
     require 'git'
@@ -12,10 +12,10 @@ class Pltt::Actions::Start < Pltt::Actions::Base
       puts "Issue: #{issue.title.green}"
     else
       prompt = TTY::Prompt.new
-      recent = gitlab_api.issues.take(30)
+      recent = gitlab_api.issues.take(30).sort_by { |i| [i.milestone&.title || "AAA" , -i.iid] }
       issue = prompt.select("Select issue to start on", per_page: 20) do |menu|
         recent.each do |this_issue|
-          menu.choice "#{this_issue.iid.to_s.magenta} #{this_issue.title}", this_issue
+          menu.choice "#{sprintf('%4d', this_issue.iid).magenta} #{this_issue.title}  #{this_issue.labels.join(' ').brown} #{this_issue.milestone&.title&.green}", this_issue
         end
       end
     end
@@ -26,7 +26,7 @@ class Pltt::Actions::Start < Pltt::Actions::Base
     end
     start_by_issue(issue)
   rescue StandardError => e
-    puts "Issue #{issue.iid} not found in project #{config['project']}".red
+    puts "Issue #{issue&.iid} not found in project #{config['project']}".red
     puts e.inspect
     exit 1
   end

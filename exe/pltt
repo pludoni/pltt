@@ -11,5 +11,18 @@ $LOAD_PATH.unshift File.join(dir, 'lib')
 ENV['BUNDLE_GEMFILE'] ||= File.join(dir, 'Gemfile')
 
 require 'pltt'
-require 'bundler/setup'
+
+require 'bundler/inline'
+gemfile do
+  source 'https://rubygems.org'
+  gem 'git', '~> 1.5.0'
+  gem 'gitlab', '~> 4.4.0'
+  gem 'hashids'
+  gem 'rake'
+  gem 'oj'
+  gem 'stringex'
+  gem 'terminal-table', '>= 1.8.0'
+  gem 'thor'
+  gem 'tty-prompt'
+end
 require 'pltt/runner'
