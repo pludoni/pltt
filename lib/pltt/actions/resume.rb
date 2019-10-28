@@ -1,7 +1,6 @@
 require_relative './base'
 class Pltt::Actions::Resume < Pltt::Actions::Base
   def run
-    require 'pry'
     exit_if_running!
 
     last_one = all_frames.sort_by { |i| File.mtime(i) }.reverse.lazy.

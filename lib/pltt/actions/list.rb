@@ -3,7 +3,6 @@ require_relative './base'
 class Pltt::Actions::List < Pltt::Actions::Base
   def run(my: false, label: nil)
     require 'terminal-table'
-    require 'pry'
 
     table = Terminal::Table.new
     gitlab_api.issues(scope: my ? 'assigned-to-me' : 'all', label: label).each do |issue|

@@ -97,7 +97,6 @@ class Pltt::Actions::Base
   def sync!(entry)
     c = entry
     minutes = c.duration_seconds.round / 60
-    require 'pry'
 
     min_part = minutes % 60
     hour_part = minutes / 60
