@@ -23,6 +23,7 @@ gemfile do
   gem 'stringex'
   gem 'terminal-table', '>= 1.8.0'
   gem 'thor'
+  gem 'pry'
   gem 'tty-prompt'
 end
 require 'pltt/runner'

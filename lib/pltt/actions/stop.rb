@@ -2,6 +2,10 @@ require_relative './base'
 require 'tty-prompt'
 # rubocop:disable Style/NegatedIf
 class Pltt::Actions::Stop < Pltt::Actions::Base
+  def pastel
+    @pastel ||= Pastel.new
+  end
+
   def run
     exit_if_not_running!
     c = current_entry
@@ -9,7 +13,7 @@ class Pltt::Actions::Stop < Pltt::Actions::Base
     minutes = (c.duration_seconds / 60).round
     puts "Currently running for #{minutes.to_s.green} min"
     prompt = TTY::Prompt.new
-    too_large = minutes > 480
+    too_large = minutes > 470
     if !prompt.no?(" Was started on #{c.start.localtime.to_s.green}, fix beginning?")
       time = prompt.ask(" Enter beginning *time* only (HH:MM)") do |q|
         q.required true
@@ -21,8 +25,9 @@ class Pltt::Actions::Stop < Pltt::Actions::Base
       minutes = (c.duration_seconds / 60).round
       puts "Currently running for #{minutes.to_s.green} min"
     end
+
     if too_large || !prompt.no?("Fix duration before saving? (#{minutes}min)")
-      puts "Error: To many minutes, must be not greater than 8h (480min)" if too_large
+      puts pastel.red("Error: To many minutes, must be not greater than 8h-10m (470min)") if too_large
       new_minutes = prompt.ask("New Minutes, beginning from #{c.start.localtime}") do |q|
         q.required true
         q.convert :int
@@ -36,6 +41,10 @@ class Pltt::Actions::Stop < Pltt::Actions::Base
     c.persist!
 
     sync_all_unsaved_entries
+
+    if !prompt.no?("Remove Label ~doing/~planned and add label ~done?")
+      gitlab_api.create_issue_note(c.iid,  %{/unlabel ~"state:doing"\n/label ~"state:done"})
+    end
   rescue StandardError => e
     puts "Issue #{c.id} not found in project #{config['project']}".red
     puts e.inspect

@@ -61,6 +61,12 @@ class Pltt::Runner < Thor
     require_relative './actions/base'
     Pltt::Actions::Base.new.sync_all_unsaved_entries
   end
+
+  desc 'errors', 'show sentry errors'
+  def errors
+    require_relative './actions/errors'
+    Pltt::Actions::Errors.new.run
+  end
 end
 
 Pltt::Runner.start(ARGV)

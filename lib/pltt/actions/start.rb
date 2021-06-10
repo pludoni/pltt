@@ -36,6 +36,8 @@ class Pltt::Actions::Start < Pltt::Actions::Base
       puts "This issue is closed"
       exit 1
     end
+    gitlab_api.set_issue_state_label(issue.iid, 'state:doing')
+    puts " adding label: ~state:doing"
     Pltt::Entry.create_new_for_gitlab_issue(config['project'], issue)
   end
 

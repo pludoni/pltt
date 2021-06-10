@@ -20,6 +20,22 @@ class Pltt::GitlabWrapper
     Gitlab.create_issue(@project, title, description: description, labels: labels.join(','), assignee_ids: [user_id])
   end
 
+  def set_issue_state_label(iid, label)
+    note = ['state:doing', 'state:next', 'state:done', 'state:planning', 'P-Parkplatz'].map { |i|
+      if label == i
+        %{/label ~"#{i}"}
+      else
+        %{/unlabel ~"#{i}"}
+      end
+    }.join("\n")
+    create_issue_note(iid, note)
+  end
+
+
+  def create_issue_note(iid, content)
+    Gitlab.create_issue_note(@project, iid, content)
+  end
+
   def labels
     Gitlab.labels(@project)
   end
