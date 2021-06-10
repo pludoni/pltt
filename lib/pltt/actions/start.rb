@@ -26,13 +26,14 @@ class Pltt::Actions::Start < Pltt::Actions::Base
     end
     start_by_issue(issue)
   rescue StandardError => e
-    puts "Issue #{issue&.iid} not found in project #{config['project']}".red
+    binding.pry
     puts e.inspect
+    puts "Issue #{issue&.iid} not found in project #{config['project']}".red
     exit 1
   end
 
   def start_by_issue(issue)
-    if issue.closed?
+    if issue.closed_at
       puts "This issue is closed"
       exit 1
     end

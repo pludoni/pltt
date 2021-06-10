@@ -13,8 +13,8 @@ $LOAD_PATH.unshift File.join(dir, 'lib')
 require 'bundler/inline'
 gemfile do
   source 'https://rubygems.org'
-  gem 'git', '~> 1.5.0', require: false
-  gem 'gitlab', '~> 4.4.0', require: false
+  gem 'git', '>= 1.5', require: false
+  gem 'gitlab', '~> 4.17', require: false
   gem 'hashids', require: false
   gem 'oj', require: false
   gem 'rake', require: false
