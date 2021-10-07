@@ -13,6 +13,10 @@ class Pltt::Actions::Start < Pltt::Actions::Base
     else
       prompt = TTY::Prompt.new
       recent = gitlab_api.issues.take(30).sort_by { |i| [i.milestone&.title || "AAA" , -i.iid] }
+      if recent.length == 0
+        puts "No Issues found in Project"
+        exit 1
+      end
       issue = prompt.select("Select issue to start on", per_page: 20) do |menu|
         recent.each do |this_issue|
           menu.choice "#{sprintf('%4d', this_issue.iid).magenta} #{this_issue.title}  #{this_issue.labels.join(' ').brown} #{this_issue.milestone&.title&.green}", this_issue

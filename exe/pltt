@@ -9,6 +9,7 @@ end
 $LOAD_PATH.unshift File.join(dir, 'lib')
 
 ENV['BUNDLE_GEMFILE'] ||= File.join(dir, 'Gemfile')
+ENV['BUNDLE_GEMFILE'] = nil
 
 require 'pltt'
 

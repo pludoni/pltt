@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'terminal-table', '>= 1.8.0'
   spec.add_dependency 'thor'
   spec.add_dependency 'tty-prompt'
-  spec.add_development_dependency "bundler" #, "~> 1.16"
+  spec.add_development_dependency "bundler" #"~> 1.17"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rake" #, "~> 10.0"
 end
