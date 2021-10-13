@@ -26,6 +26,8 @@ class Pltt::Actions::Stop < Pltt::Actions::Base
       puts "Currently running for #{minutes.to_s.green} min"
     end
 
+    time_save = Time.now.utc
+
     if too_large || !prompt.no?("Fix duration before saving? (#{minutes}min)")
       puts pastel.red("Error: To many minutes, must be not greater than 8h-10m (470min)") if too_large
       new_minutes = prompt.ask("New Minutes, beginning from #{c.start.localtime}") do |q|
@@ -34,7 +36,7 @@ class Pltt::Actions::Stop < Pltt::Actions::Base
       end
       stop = (c.start + new_minutes * 60).utc
     else
-      stop = Time.now.utc
+      stop = time_save
     end
     c.stop = stop
 
