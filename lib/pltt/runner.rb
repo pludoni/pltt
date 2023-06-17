@@ -14,9 +14,9 @@ class Pltt::Runner < Thor
   end
 
   desc "start [ID]", "start tracking for issue #ID"
-  def start(id = nil)
+  def start(iid: nil)
     require_relative './actions/start'
-    Pltt::Actions::Start.run(id)
+    Pltt::Actions::Start.run(iid: nil)
   end
 
   desc "stop", "Stop"
@@ -40,9 +40,9 @@ class Pltt::Runner < Thor
   end
 
   desc "edit [ID = CURRENT]", "start tracking for issue #ID"
-  def edit(id = nil)
+  def edit(id: nil)
     require_relative './actions/edit'
-    Pltt::Actions::Edit.run(id)
+    Pltt::Actions::Edit.run(id: nil)
   end
 
   desc "cancel", "cancel current entry"
