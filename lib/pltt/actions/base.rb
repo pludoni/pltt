@@ -4,8 +4,8 @@ require_relative '../entry'
 require_relative '../colorize'
 
 class Pltt::Actions::Base
-  def self.run(*args)
-    new.run(*args)
+  def self.run(**args)
+    new.run(**args)
   end
 
   def config
