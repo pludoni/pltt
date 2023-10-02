@@ -67,6 +67,12 @@ class Pltt::Runner < Thor
     require_relative './actions/errors'
     Pltt::Actions::Errors.new.run
   end
+
+  desc 'fix [ISSUE_ID]', 'automatical commit based on a SENTRY Error ID'
+  def fix(issue_id)
+    require_relative './actions/commit_sentry'
+    Pltt::Actions::CommitSentry.new(issue_id).run
+  end
 end
 
 Pltt::Runner.start(ARGV)
