@@ -1,10 +1,14 @@
 require_relative './base'
 require 'httparty'
 require 'pastel'
+require_relative 'sentry_base'
 
-class Pltt::Actions::Errors
-  PASTEL = Pastel.new
+class Pltt::Actions::Errors < Pltt::Actions::SentryBase
   class Issue
+    def pastel
+      Pltt::Actions::SentryBase.pastel
+    end
+
     def title
       @sentry['title']
     end
@@ -42,16 +46,16 @@ class Pltt::Actions::Errors
 
     def to_s
       <<~DOC
-        #{PASTEL.red(id)} #{title}
-          Last: #{PASTEL.green(last_seen_relative)} Count/Users: #{PASTEL.green(@sentry['count'])} / #{@sentry['userCount']}
-          #{PASTEL.dim(url)}
+        #{pastel.red(id)} #{title}
+          Last: #{pastel.green(last_seen_relative)} Count/Users: #{pastel.green(@sentry['count'])} / #{@sentry['userCount']}
+          #{pastel.dim(url)}
       DOC
     end
   end
 
   def run
-    url = "https://sentry.pludoni.com/api/0/projects/pludoni/#{project}/issues/"
-    response = HTTParty.get(url, format: :json, headers: { "Authorization" => "Bearer #{token}" }, query: { statsPeriod: '14d', query: 'is:unresolved' })
+    url = "projects/#{organisation}/#{project}/issues/"
+    response = get(url, query: { statsPeriod: '14d', query: 'is:unresolved' })
     issues = response.map { |i| Issue.new(i) }
     cutoff = (Date.today - 4).to_time
     puts issues.select { |i| i.last_seen > cutoff }.reverse
@@ -60,9 +64,5 @@ class Pltt::Actions::Errors
   def project
     yaml = YAML.load_file('.gtt.yml')
     yaml['sentry_project'] || yaml['project'].split('/').last
-  end
-
-  def token
-    "627cd87b170a4a40af5fa607525613c61da4d26f8eab45c19dd915a1e3eeac49"
   end
 end

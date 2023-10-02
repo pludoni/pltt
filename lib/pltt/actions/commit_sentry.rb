@@ -1,8 +1,9 @@
 require_relative './base'
 require 'httparty'
 require 'pastel'
+require_relative 'sentry_base'
 
-class Pltt::Actions::CommitSentry
+class Pltt::Actions::CommitSentry < Pltt::Actions::SentryBase
   PASTEL = Pastel.new
   attr_reader :issue_id
 
@@ -16,10 +17,9 @@ class Pltt::Actions::CommitSentry
       @issue_id = Regexp.last_match(1)
     end
 
-    issue_data = HTTParty.get("#{server}/organizations/#{organisation}/issues/#{issue_id}/events/latest/",
-                              headers: { 'Authorization' => "Bearer #{token}" })
+    issue_data = get("organizations/#{organisation}/issues/#{issue_id}/events/latest/", query: nil)
     unless issue_data.success?
-      warn PASTEL.red("Error: #{issue_data.code} #{issue_data.body}")
+      warn pastel.red("Error: #{issue_data.code} #{issue_data.body}")
       p issue_data
       exit 1
     end
@@ -30,19 +30,10 @@ class Pltt::Actions::CommitSentry
 
     message = "ExceptionFix: #{culprit}\n\nFix #{title}\nFixes #{issue_id}"
 
+    puts pastel.green("Starting commit for #{issue_id} #{title}")
+    puts pastel.green("Commit message: #{message}")
+
     exec("git commit -m #{Shellwords.escape(message)} -e")
-  end
-
-  def token
-    "627cd87b170a4a40af5fa607525613c61da4d26f8eab45c19dd915a1e3eeac49"
-  end
-
-  def server
-    'https://sentry.pludoni.com/api/0'
-  end
-
-  def organisation
-    'pludoni'
   end
 end
 
