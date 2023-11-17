@@ -1,6 +1,6 @@
 require_relative './base'
 class Pltt::Actions::Start < Pltt::Actions::Base
-  def run(iid)
+  def run(iid: nil)
     stop_if_running!(default: true)
     require 'tty-prompt'
     require 'stringex'
