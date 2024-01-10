@@ -53,4 +53,12 @@ class Pltt::GitlabWrapper
   def add_time_spent_on_issue(project, issue_id, duration)
     Gitlab.add_time_spent_on_issue(project, issue_id, duration)
   end
+
+  def pipelines(ref = "master")
+    Gitlab.pipelines(@project, ref: ref)
+  end
+
+  def cancel_pipeline(iid)
+    Gitlab.cancel_pipeline(@project, iid)
+  end
 end

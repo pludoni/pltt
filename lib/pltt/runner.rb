@@ -73,6 +73,12 @@ class Pltt::Runner < Thor
     require_relative './actions/commit_sentry'
     Pltt::Actions::CommitSentry.new(issue_id).run
   end
+
+  desc "cancel_pipelines", "cancel pending pipelines except newest to avoid over deployments"
+  def cancel_pipelines
+    require_relative './actions/cancel_pipeline'
+    base = Pltt::Actions::CancelPipeline.new.run
+  end
 end
 
 Pltt::Runner.start(ARGV)
